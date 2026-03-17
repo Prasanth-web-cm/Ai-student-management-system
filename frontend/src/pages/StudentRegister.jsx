@@ -19,7 +19,7 @@ export default function StudentRegister() {
     if (file) data.append('photo', file);
 
     try {
-      const response = await fetch('http://localhost:5000/api/students', {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/students`, {
         method: 'POST',
         body: data,
       });

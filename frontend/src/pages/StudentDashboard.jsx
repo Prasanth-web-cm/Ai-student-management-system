@@ -4,12 +4,12 @@ import { Download, CheckCircle, FileText, AlertCircle } from 'lucide-react';
 export default function StudentDashboard() {
   const downloadMarks = () => {
     // In real app, call /api/export/marks/:id
-    window.location.href = 'http://localhost:5000/api/export/marks/123';
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/export/marks/123`;
   };
 
   const downloadAttendance = () => {
     // In real app, call /api/export/attendance/:id
-    window.location.href = 'http://localhost:5000/api/export/attendance/123';
+    window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/export/attendance/123`;
   };
 
   return (

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { API_BASE } from '../api';
 
 const AuthContext = createContext();
 
@@ -24,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (role, credentials) => {
     try {
       const endpoint = role === 'admin' ? '/api/auth/admin/login' : '/api/auth/student/login';
-      const response = await axios.post(`http://localhost:5000${endpoint}`, credentials);
+      const response = await axios.post(`${API_BASE}${endpoint}`, credentials);
       const { token, user } = response.data;
       
       localStorage.setItem('token', token);

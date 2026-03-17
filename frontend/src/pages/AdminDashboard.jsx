@@ -8,7 +8,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/students')
+    fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/students`)
       .then(res => res.json())
       .then(data => {
         setStudents(data);
@@ -95,7 +95,7 @@ export default function AdminDashboard() {
                     <td className="py-4 font-bold flex items-center gap-4">
                       <div className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden bg-slate-200">
                         <img 
-                          src={student.photoUrl ? `http://localhost:5000${student.photoUrl}` : "https://via.placeholder.com/60"} 
+                          src={student.photoUrl ? `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}${student.photoUrl}` : "https://via.placeholder.com/60"} 
                           alt={student.name} 
                           className="w-full h-full object-cover" 
                         />
