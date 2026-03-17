@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const Student = require('../models/Student');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 
 const storage = multer.diskStorage({
@@ -16,7 +17,8 @@ router.post('/', upload.single('photo'), async (req, res) => {
     const { name, studentId, phone, dept, sec, password } = req.body;
     const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
     
-    const student = new Student({ name, studentId, phone, dept, sec, password, photoUrl });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const student = new Student({ name, studentId, phone, dept, sec, password: hashedPassword, photoUrl });
     await student.save();
     res.status(201).json(student);
   } catch (error) {
@@ -67,16 +69,5 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
-// Student login
-router.post('/login', async (req, res) => {
-  try {
-    const { studentId, password } = req.body;
-    const student = await Student.findOne({ studentId, password });
-    if (!student) return res.status(401).json({ error: 'Invalid credentials' });
-    res.json({ student });
-  } catch (error) {
-    res.status(500).json({ error: 'Login error' });
-  }
-});
-
+// Redundant login route removed as it is now in auth.js
 module.exports = router;

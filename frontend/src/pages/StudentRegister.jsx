@@ -6,10 +6,39 @@ export default function StudentRegister() {
   });
   const [file, setFile] = useState(null);
 
-  const handleSubmit = (e) => {
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState({ text: '', type: '' });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Connect to backend API later
-    console.log('Student Registration:', formData, file);
+    setLoading(true);
+    setMessage({ text: '', type: '' });
+
+    const data = new FormData();
+    Object.keys(formData).forEach(key => data.append(key, formData[key]));
+    if (file) data.append('photo', file);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/students', {
+        method: 'POST',
+        body: data,
+      });
+
+      if (response.ok) {
+        setMessage({ text: 'Registration Successful!', type: 'success' });
+        // Reset form
+        setFormData({ name: '', studentId: '', phone: '', dept: '', sec: '', password: '' });
+        setFile(null);
+        e.target.reset();
+      } else {
+        const errData = await response.json();
+        setMessage({ text: `Error: ${errData.error || 'Failed to register'}`, type: 'error' });
+      }
+    } catch (error) {
+      setMessage({ text: 'Network error. Is the backend running?', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -18,6 +47,12 @@ export default function StudentRegister() {
         <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Student <span className="text-primary-600">Registration</span></h2>
         <p className="text-slate-500 mt-2">Enter your details to register in the central database.</p>
       </div>
+
+      {message.text && (
+        <div className={`mb-6 p-4 rounded-xl text-sm font-bold ${message.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}>
+          {message.text}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="md:col-span-2">
@@ -75,8 +110,11 @@ export default function StudentRegister() {
         </div>
 
         <div className="md:col-span-2 pt-4">
-          <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-primary-500/30">
-            Submit Registration
+          <button 
+            type="submit" 
+            disabled={loading}
+            className={`w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 rounded-xl transition-all shadow-lg shadow-primary-500/30 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}>
+            {loading ? 'Submitting...' : 'Submit Registration'}
           </button>
         </div>
       </form>

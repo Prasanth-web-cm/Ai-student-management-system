@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Users, FilePlus, Database } from 'lucide-react';
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/students')
+      .then(res => res.json())
+      .then(data => {
+        setStudents(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching students:', err);
+        setLoading(false);
+      });
+  }, []);
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-100">
@@ -16,8 +33,10 @@ export default function AdminDashboard() {
           <h3 className="text-2xl font-bold mb-2 tracking-tight">Manage Students</h3>
           <p className="text-primary-100 text-sm font-medium leading-relaxed">Add, remove, or update student administrative records and details.</p>
           <div className="mt-8">
-            <button className="bg-white/20 hover:bg-white/30 text-white w-full py-3 rounded-xl font-bold backdrop-blur-md transition-all shadow-inner">
-              View Directory
+            <button 
+              onClick={() => navigate('/register')}
+              className="bg-white/20 hover:bg-white/30 text-white w-full py-3 rounded-xl font-bold backdrop-blur-md transition-all shadow-inner">
+              Add New Student
             </button>
           </div>
         </div>
@@ -28,7 +47,9 @@ export default function AdminDashboard() {
           <h3 className="text-2xl font-bold mb-2 tracking-tight">Academic Records</h3>
           <p className="text-teal-100 text-sm font-medium leading-relaxed">Create, manage and update marks and daily attendance registers.</p>
           <div className="mt-8">
-            <button className="bg-white/20 hover:bg-white/30 text-white w-full py-3 rounded-xl font-bold backdrop-blur-md transition-all shadow-inner">
+            <button 
+              onClick={() => navigate('/attendance')}
+              className="bg-white/20 hover:bg-white/30 text-white w-full py-3 rounded-xl font-bold backdrop-blur-md transition-all shadow-inner">
               Update Records
             </button>
           </div>
@@ -40,7 +61,8 @@ export default function AdminDashboard() {
           <h3 className="text-2xl font-bold mb-2 tracking-tight">Forms & Quizzes</h3>
           <p className="text-indigo-100 text-sm font-medium leading-relaxed">Send interactive forms or conduct online objective quizzes.</p>
           <div className="mt-8">
-            <button className="bg-white/20 hover:bg-white/30 text-white w-full py-3 rounded-xl font-bold backdrop-blur-md transition-all shadow-inner">
+            <button 
+              className="bg-white/20 hover:bg-white/30 text-white w-full py-3 rounded-xl font-bold backdrop-blur-md transition-all shadow-inner">
               Create New
             </button>
           </div>
@@ -63,36 +85,35 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody className="text-slate-700">
-              <tr className="border-b border-slate-50 hover:bg-slate-50/80 transition-colors group">
-                <td className="py-4 font-bold flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden bg-slate-200">
-                    <img src="https://images.unsplash.com/photo-1544717305-2782549b5136?w=60" alt="Jane" className="w-full h-full object-cover" />
-                  </div>
-                  Jane Smith
-                </td>
-                <td className="py-4 font-medium text-slate-500">CS202402</td>
-                <td className="py-4 font-medium">Computer Science</td>
-                <td className="py-4 text-right">
-                  <button className="text-primary-600 hover:text-white hover:bg-primary-600 bg-primary-50 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-                    View
-                  </button>
-                </td>
-              </tr>
-              <tr className="border-b border-slate-50 hover:bg-slate-50/80 transition-colors group">
-                <td className="py-4 font-bold flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden bg-slate-200">
-                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60" alt="Mark" className="w-full h-full object-cover" />
-                  </div>
-                  Mark Johnson
-                </td>
-                <td className="py-4 font-medium text-slate-500">ME202415</td>
-                <td className="py-4 font-medium">Mechanical</td>
-                <td className="py-4 text-right">
-                  <button className="text-primary-600 hover:text-white hover:bg-primary-600 bg-primary-50 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
-                    View
-                  </button>
-                </td>
-              </tr>
+              {loading ? (
+                <tr><td colSpan="4" className="py-8 text-center text-slate-400">Loading records...</td></tr>
+              ) : students.length === 0 ? (
+                <tr><td colSpan="4" className="py-8 text-center text-slate-400">No students registered yet.</td></tr>
+              ) : (
+                students.slice(0, 5).map(student => (
+                  <tr key={student._id} className="border-b border-slate-50 hover:bg-slate-50/80 transition-colors group">
+                    <td className="py-4 font-bold flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full border-2 border-white shadow-sm overflow-hidden bg-slate-200">
+                        <img 
+                          src={student.photoUrl ? `http://localhost:5000${student.photoUrl}` : "https://via.placeholder.com/60"} 
+                          alt={student.name} 
+                          className="w-full h-full object-cover" 
+                        />
+                      </div>
+                      {student.name}
+                    </td>
+                    <td className="py-4 font-medium text-slate-500">{student.studentId}</td>
+                    <td className="py-4 font-medium">{student.dept}</td>
+                    <td className="py-4 text-right">
+                      <button 
+                        onClick={() => navigate(`/students/${student._id}`)}
+                        className="text-primary-600 hover:text-white hover:bg-primary-600 bg-primary-50 px-4 py-2 rounded-lg text-sm font-bold transition-colors">
+                        View
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
