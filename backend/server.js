@@ -20,6 +20,10 @@ if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
 }
 
 // Routes
+app.get('/', (req, res) => {
+  res.send('Student Management System Backend is running');
+});
+
 const authRoutes = require('./routes/auth');
 const studentRoutes = require('./routes/students');
 const markRoutes = require('./routes/marks');

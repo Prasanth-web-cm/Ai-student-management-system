@@ -1,11 +1,13 @@
 {
-  "name": "backend",
+  "name": "student-management-system",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Student Management System",
+  "main": "backend/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "build": "echo 'No build step required'",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
