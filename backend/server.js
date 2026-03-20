@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, '.env') });
 
 const app = express();
 app.use(cors());
@@ -48,6 +48,11 @@ app.use('/api/export', exportRoutes);
 
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/student-management';
+
+console.log('Using MongoDB URI from env:', !!process.env.MONGO_URI);
+if (!process.env.MONGO_URI) {
+  console.warn('WARNING: Using fallback local MongoDB URI. Render should set MONGO_URI env var.');
+}
 
 mongoose.connect(MONGO_URI)
   .then(() => {

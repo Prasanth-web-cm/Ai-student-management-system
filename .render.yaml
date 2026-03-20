@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: student-management-backend
+    env: node
+    region: oregon
+    branch: main
+    root: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        value: "mongodb+srv://prasanthsaiponna_db_user:234E1A3382@cluster0.pk8beau.mongodb.net/student-management?retryWrites=true&w=majority"
+      - key: PORT
+        value: "5000"
+      - key: JWT_SECRET
+        value: "supersecretvalue"
+
+  - type: static
+    name: student-management-frontend
+    env: static
+    region: oregon
+    branch: main
+    root: frontend
+    buildCommand: npm install && npm run build
+    publishCommand: npm run build
+    publishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: "https://student-management-backend.onrender.com"
