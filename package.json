@@ -4,8 +4,8 @@
   "description": "Student Management System",
   "main": "backend/server.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "dev": "nodemon backend/server.js",
+    "start": "cd backend && node server.js",
+    "dev": "cd backend && nodemon server.js",
     "build": "echo 'No build step required'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
