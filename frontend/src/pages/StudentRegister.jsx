@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { API_BASE } from '../api';
 
 export default function StudentRegister() {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ export default function StudentRegister() {
     if (file) data.append('photo', file);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/students`, {
+      const response = await fetch(`${API_BASE}/api/students`, {
         method: 'POST',
         body: data,
       });
@@ -35,7 +36,8 @@ export default function StudentRegister() {
         setMessage({ text: `Error: ${errData.error || 'Failed to register'}`, type: 'error' });
       }
     } catch (error) {
-      setMessage({ text: 'Network error. Is the backend running?', type: 'error' });
+      console.error('Registration error:', error);
+      setMessage({ text: `Network error. Failed to connect to ${API_BASE}. Please ensure the backend is running and CORS is allowed.`, type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -118,6 +120,13 @@ export default function StudentRegister() {
           </button>
         </div>
       </form>
+      
+      {/* Subtle Debug Info */}
+      <div className="mt-8 pt-6 border-t border-slate-50 text-center">
+        <p className="text-[10px] text-slate-300 font-medium uppercase tracking-widest">
+          Backend Connection: <span className="text-slate-400 select-all">{API_BASE}</span>
+        </p>
+      </div>
     </div>
   );
 }

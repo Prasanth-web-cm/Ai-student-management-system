@@ -2,12 +2,18 @@ const express = require('express');
 const Mark = require('../models/Mark');
 const Attendance = require('../models/Attendance');
 const Student = require('../models/Student');
+const mongoose = require('mongoose');
 const router = express.Router();
 
 router.get('/marks/:studentId', async (req, res) => {
   try {
-    const student = await Student.findById(req.params.studentId);
-    const marks = await Mark.find({ studentId: req.params.studentId });
+    const { studentId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(studentId)) {
+      return res.status(400).json({ error: 'Invalid Student ID format' });
+    }
+    const student = await Student.findById(studentId);
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+    const marks = await Mark.find({ studentId });
     
     let csv = 'Subject,Marks Obtained,Total Marks,Exam Type,Date\n';
     marks.forEach(m => {
@@ -24,8 +30,13 @@ router.get('/marks/:studentId', async (req, res) => {
 
 router.get('/attendance/:studentId', async (req, res) => {
   try {
-    const student = await Student.findById(req.params.studentId);
-    const attendance = await Attendance.find({ studentId: req.params.studentId });
+    const { studentId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(studentId)) {
+      return res.status(400).json({ error: 'Invalid Student ID format' });
+    }
+    const student = await Student.findById(studentId);
+    if (!student) return res.status(404).json({ error: 'Student not found' });
+    const attendance = await Attendance.find({ studentId });
     
     let csv = 'Date,Status\n';
     attendance.forEach(a => {

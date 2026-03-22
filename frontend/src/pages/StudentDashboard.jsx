@@ -3,6 +3,7 @@ import { Download, CheckCircle, FileText, AlertCircle } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import PerformancePredictor from '../components/PerformancePredictor';
+import { API_BASE } from '../api';
 
 export default function StudentDashboard() {
   const { id } = useParams();
@@ -11,13 +12,13 @@ export default function StudentDashboard() {
   const studentId = id || (user && user._id) || '234e1a3382234e1a3382234e'; 
 
   const downloadMarks = () => {
-    // In real app, call /api/export/marks/:id
-    window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/export/marks/123`;
+    // Call the actual student ID from the URL or Auth context
+    window.location.href = `${API_BASE}/api/export/marks/${studentId}`;
   };
 
   const downloadAttendance = () => {
-    // In real app, call /api/export/attendance/:id
-    window.location.href = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'}/api/export/attendance/123`;
+    // Call the actual student ID from the URL or Auth context
+    window.location.href = `${API_BASE}/api/export/attendance/${studentId}`;
   };
 
   return (
@@ -25,14 +26,14 @@ export default function StudentDashboard() {
       <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary-50 rounded-full blur-3xl -z-10 translate-x-1/2 -translate-y-1/2"></div>
         <div className="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden shrink-0 z-10 bg-slate-100">
-          <img src="img.jpg" alt="Student" className="w-full h-full object-cover" />
+          <img src={user?.photoUrl ? `${API_BASE}${user.photoUrl}` : "img.jpg"} alt="Student" className="w-full h-full object-cover" />
         </div>
         <div className="z-10 text-center md:text-left">
-          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">prasanth</h2>
-          <p className="text-slate-500 font-medium mt-1">B.Tech Computer Science - Section A</p>
+          <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">{user?.name || 'Loading...'}</h2>
+          <p className="text-slate-500 font-medium mt-1">{user?.dept || 'Department'} - Section {user?.sec || 'Section'}</p>
           <div className="flex flex-wrap justify-center md:justify-start gap-4 mt-4">
             <span className="bg-green-100/80 text-green-700 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">Status: Active</span>
-            <span className="bg-primary-100/80 text-primary-700 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">ID: 234E1A3382</span>
+            <span className="bg-primary-100/80 text-primary-700 px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">ID: {user?.studentId || 'ID'}</span>
           </div>
         </div>
       </div>
