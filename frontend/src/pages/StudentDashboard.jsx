@@ -7,7 +7,8 @@ import PerformancePredictor from '../components/PerformancePredictor';
 export default function StudentDashboard() {
   const { id } = useParams();
   const { user } = useAuth();
-  const studentId = id || (user && user._id) || '123'; // Fallback for demo if no ID
+  // Use a valid MongoDB ObjectId as a fallback for the demo
+  const studentId = id || (user && user._id) || '234e1a3382234e1a3382234e'; 
 
   const downloadMarks = () => {
     // In real app, call /api/export/marks/:id

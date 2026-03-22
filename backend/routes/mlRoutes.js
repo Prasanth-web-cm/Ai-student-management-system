@@ -3,11 +3,17 @@ const router = express.Router();
 const Mark = require('../models/Mark');
 const Attendance = require('../models/Attendance');
 const { predictPerformance } = require('../services/mlService');
+const mongoose = require('mongoose');
 
 // Get performance prediction for a student
 router.get('/predict/:studentId', async (req, res) => {
   try {
     const { studentId } = req.params;
+
+    // Check if studentId is a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(studentId)) {
+      return res.status(400).json({ error: 'Invalid Student ID format' });
+    }
 
     // 1. Fetch Attendance Data
     const attendanceRecords = await Attendance.find({ studentId });
