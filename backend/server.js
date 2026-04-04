@@ -61,13 +61,16 @@ if (fs.existsSync(frontendFolder)) {
     // For any request that doesn't match an API route or a static file,
     // send back the index.html from the frontend folder.
     // This supports client-side routing on page refresh.
+    // Explicit 404 for missing API or Uploads after trying all handlers
+    app.use(['/api', '/uploads'], (req, res) => {
+        res.status(404).json({ error: 'Resource not found' });
+    });
+
+    // For any request that doesn't match an API route or a static file,
+    // send back the index.html from the frontend folder.
+    // This supports client-side routing on page refresh.
     app.get('/*splat', (req, res) => {
-        // Exclude /api routes from being caught here for debugging clarity
-        if (!req.url.startsWith('/api/')) {
-            res.sendFile(path.resolve(frontendFolder, 'index.html'));
-        } else {
-            res.status(404).json({ error: 'API route not found' });
-        }
+        res.sendFile(path.resolve(frontendFolder, 'index.html'));
     });
 } else {
     console.warn(`WARNING: Frontend build folder not found at ${frontendFolder}. Check if frontend has been built.`);
