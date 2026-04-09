@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { API_BASE } from '../api';
 import axios from 'axios';
+import EditStudentModal from '../components/dashboards/EditStudentModal';
 
 export default function ManageStudents() {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ export default function ManageStudents() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDept, setSelectedDept] = useState('All');
+  const [editingStudent, setEditingStudent] = useState(null);
 
   useEffect(() => {
     fetchStudents();
@@ -175,8 +177,12 @@ export default function ManageStudents() {
                           className="p-2.5 rounded-xl bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-sm border border-red-100 hover:border-red-500 flex items-center justify-center">
                           <Trash2 size={16} />
                         </button>
-                        <button className="p-2.5 rounded-xl bg-slate-100 text-slate-400 hover:bg-slate-200 transition-all">
-                           <MoreVertical size={16} />
+                        <button 
+                          onClick={() => setEditingStudent(student)}
+                          className="p-2.5 rounded-xl bg-slate-100 text-slate-600 hover:bg-primary-600 hover:text-white transition-all shadow-sm border border-transparent hover:border-primary-600 flex items-center justify-center"
+                          title="Edit Student"
+                        >
+                           <Edit size={16} />
                         </button>
                       </div>
                     </td>
@@ -187,6 +193,16 @@ export default function ManageStudents() {
           </table>
         </div>
       </div>
+
+      {editingStudent && (
+        <EditStudentModal 
+          student={editingStudent}
+          onClose={() => setEditingStudent(null)}
+          onUpdate={(updatedStudent) => {
+            setStudents(students.map(s => s._id === updatedStudent._id ? updatedStudent : s));
+          }}
+        />
+      )}
     </div>
   );
 }

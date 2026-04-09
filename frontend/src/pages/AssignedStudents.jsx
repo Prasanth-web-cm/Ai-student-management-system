@@ -1,9 +1,10 @@
 import React from 'react';
-import { Users, Search, Filter, AlertTriangle, CheckCircle, ChevronRight, MessageSquare } from 'lucide-react';
+import { Users, Search, Filter, AlertTriangle, CheckCircle, ChevronRight, MessageSquare, Edit } from 'lucide-react';
 import axios from 'axios';
 import { API_BASE } from '../api';
 import { useAuth } from '../context/AuthContext';
 import ManualSmsForm from '../components/dashboards/ManualSmsForm';
+import EditStudentModal from '../components/dashboards/EditStudentModal';
 
 export default function AssignedStudents() {
   const { user } = useAuth();
@@ -12,6 +13,7 @@ export default function AssignedStudents() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedStudent, setSelectedStudent] = React.useState(null);
   const [showSmsForm, setShowSmsForm] = React.useState(false);
+  const [editingStudent, setEditingStudent] = React.useState(null);
 
   React.useEffect(() => {
     fetchAssignedStudents();
@@ -133,7 +135,17 @@ export default function AssignedStudents() {
                   >
                     <MessageSquare size={18} />
                   </button>
-                  <button className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100 transition-all active:scale-95">
+                  <button 
+                    onClick={() => setEditingStudent(s)}
+                    className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100 transition-all active:scale-95"
+                    title="Edit Student Info"
+                  >
+                    <Edit size={18} />
+                  </button>
+                  <button 
+                    onClick={() => window.location.href = `/students/${s._id}`}
+                    className="p-3 bg-white border border-slate-200 rounded-xl hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100 transition-all active:scale-95"
+                  >
                     <ChevronRight size={18} />
                   </button>
                </div>
@@ -147,11 +159,21 @@ export default function AssignedStudents() {
            <p className="text-slate-500 font-medium">Try adjusting your filters or search criteria.</p>
         </div>
       )}
-
+ 
       {showSmsForm && selectedStudent && (
         <ManualSmsForm 
           student={selectedStudent} 
           onClose={() => setShowSmsForm(false)} 
+        />
+      )}
+
+      {editingStudent && (
+        <EditStudentModal 
+          student={editingStudent}
+          onClose={() => setEditingStudent(null)}
+          onUpdate={(updated) => {
+            setStudents(students.map(s => s._id === updated._id ? updated : s));
+          }}
         />
       )}
     </div>

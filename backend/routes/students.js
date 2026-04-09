@@ -142,10 +142,19 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update student
-router.put('/:id', upload.single('photo'), async (req, res) => {
+router.put('/:id', registerUpload, async (req, res) => {
   try {
     const updateData = { ...req.body };
-    if (req.file) updateData.photoUrl = `/uploads/${req.file.filename}`;
+    
+    if (req.files) {
+      if (req.files['photo']) {
+        updateData.photoUrl = `/uploads/${req.files['photo'][0].filename}`;
+      }
+      if (req.files['parentAadhar']) {
+        updateData.parentAadharUrl = `/uploads/${req.files['parentAadhar'][0].filename}`;
+      }
+    }
+    
     const student = await Student.findByIdAndUpdate(req.params.id, updateData, { new: true });
     res.json(student);
   } catch (error) {
