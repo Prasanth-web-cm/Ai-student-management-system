@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Users, CheckSquare, FileText, BookOpen, GraduationCap, Building2, LogIn } from 'lucide-react';
+import { Users, CheckSquare, FileText, BookOpen, GraduationCap, Building2, LogIn, HeartPulse } from 'lucide-react';
 
 export default function Sidebar() {
   const location = useLocation();
@@ -47,9 +47,13 @@ export default function Sidebar() {
         </Link>
       </div>
 
-      {/* Admin Login at bottom */}
-      <div className="p-4 border-t border-slate-800">
-        <Link to="/admin/login" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800 text-white hover:bg-slate-700 hover:shadow-lg transition-all duration-200 group">
+      {/* Login Options at bottom */}
+      <div className="p-4 border-t border-slate-800 space-y-3">
+        <Link to="/counsellor/login" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800 text-white hover:bg-slate-700 hover:shadow-lg transition-all duration-200 group border border-slate-700">
+          <HeartPulse size={20} className="group-hover:text-indigo-400 transition-colors" />
+          <span className="font-medium text-sm">Counsellor Login</span>
+        </Link>
+        <Link to="/admin/login" className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800 text-white hover:bg-slate-700 hover:shadow-lg transition-all duration-200 group border border-slate-700">
           <LogIn size={20} className="group-hover:text-primary-400 transition-colors" />
           <span className="font-medium text-sm">Admin Login</span>
         </Link>

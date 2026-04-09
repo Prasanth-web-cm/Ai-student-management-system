@@ -1,6 +1,7 @@
 const express = require('express');
 const Admin = require('../models/Admin');
 const Student = require('../models/Student');
+const Counsellor = require('../models/Counsellor');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -49,6 +50,23 @@ router.post('/student/login', async (req, res) => {
     
     const token = jwt.sign({ id: student._id, role: 'student' }, JWT_SECRET, { expiresIn: '1d' });
     res.json({ token, user: { id: student._id, name: student.name, studentId: student.studentId, role: 'student' } });
+  } catch (error) {
+    res.status(500).json({ error: 'Login error' });
+  }
+});
+
+// Counsellor Login
+router.post('/counsellor/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const counsellor = await Counsellor.findOne({ email });
+    if (!counsellor) return res.status(401).json({ error: 'Invalid credentials' });
+    
+    const isMatch = await bcrypt.compare(password, counsellor.password);
+    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
+    
+    const token = jwt.sign({ id: counsellor._id, role: 'counsellor' }, JWT_SECRET, { expiresIn: '1d' });
+    res.json({ token, user: { id: counsellor._id, name: counsellor.name, email: counsellor.email, role: 'counsellor' } });
   } catch (error) {
     res.status(500).json({ error: 'Login error' });
   }

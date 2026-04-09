@@ -6,7 +6,8 @@ import {
   FileEdit, 
   Settings, 
   LogOut,
-  GraduationCap
+  GraduationCap,
+  MessageSquare
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -23,6 +24,7 @@ export default function AdminSidebar() {
     { icon: Users, label: 'Manage Students', path: '/admin/students' },
     { icon: ClipboardList, label: 'Academic Records', path: '/attendance' },
     { icon: FileEdit, label: 'Forms & Quizzes', path: '/marks' },
+    { icon: MessageSquare, label: 'SMS History', path: '/admin/alerts' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
 

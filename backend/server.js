@@ -35,6 +35,8 @@ const attendanceRoutes = require('./routes/attendance');
 const quizRoutes = require('./routes/quizzes');
 const exportRoutes = require('./routes/export');
 const mlRoutes = require('./routes/mlRoutes');
+const counsellorRoutes = require('./routes/counsellors');
+const smsHistoryRoutes = require('./routes/smsHistory');
 
 // Base route test
 app.get('/api/status', (req, res) => {
@@ -49,6 +51,8 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/quizzes', quizRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/ml', mlRoutes);
+app.use('/api/counsellors', counsellorRoutes);
+app.use('/api/sms', smsHistoryRoutes);
 
 // --- START: SERVE FRONTEND STATIC FILES ---
 // Note: This works in production if you run 'npm run build' in the frontend folder first.

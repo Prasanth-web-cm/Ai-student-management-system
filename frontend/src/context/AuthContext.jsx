@@ -37,7 +37,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (role, credentials) => {
     try {
-      const endpoint = role === 'admin' ? '/api/auth/admin/login' : '/api/auth/student/login';
+      let endpoint = '';
+      switch(role) {
+        case 'admin': endpoint = '/api/auth/admin/login'; break;
+        case 'student': endpoint = '/api/auth/student/login'; break;
+        case 'counsellor': endpoint = '/api/auth/counsellor/login'; break;
+        default: throw new Error('Invalid role');
+      }
+
       const response = await axios.post(`${API_BASE}${endpoint}`, credentials);
       const { token, user } = response.data;
       
@@ -52,10 +59,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.clear(); // Clear everything to be safe
     setToken(null);
     setUser(null);
+    delete axios.defaults.headers.common['Authorization'];
+    window.location.href = '/'; // Hard redirect to clean all state/memory
   };
 
   return (

@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const Student = require('../models/Student');
+const Counsellor = require('../models/Counsellor');
 const bcrypt = require('bcryptjs');
 const router = express.Router();
 
@@ -19,34 +20,101 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+const Tesseract = require('tesseract.js');
 const upload = multer({ 
   storage,
   fileFilter,
   limits: { fileSize: 2 * 1024 * 1024 } // 2MB limit
 });
 
-// Create student with passport photo
-router.post('/', upload.single('photo'), async (req, res) => {
+// Configure for multi-file upload
+const registerUpload = upload.fields([
+  { name: 'photo', maxCount: 1 },
+  { name: 'parentAadhar', maxCount: 1 }
+]);
+
+// Helper for OCR extraction
+async function extractPhoneFromImage(imagePath) {
   try {
-    const { name, studentId, phone, dept, sec, password } = req.body;
+    const { data: { text } } = await Tesseract.recognize(imagePath, 'eng');
+    console.log('OCR Raw Text:', text);
     
-    // Server-side validation
-    const phoneRegex = /^[0-9]{10}$/;
-    if (!phoneRegex.test(phone)) {
-      return res.status(400).json({ error: 'Phone number must be exactly 10 digits.' });
+    // Improved Regex to find 10-digit Indian mobile numbers
+    // Often formatted like +91-XXXXX-XXXXX, XXXXXXXXXX, 0 XXXXXXXXXX
+    const phoneRegex = /(?:(?:\+|0{0,2})91[\s-]?)?[6789]\d{9}/g;
+    const matches = text.match(phoneRegex);
+    
+    if (matches && matches.length > 0) {
+      // Clean extracted number to just digits, take last 10
+      return matches[0].replace(/\D/g, '').slice(-10);
+    }
+    return null;
+  } catch (error) {
+    console.error('OCR Extraction Error:', error);
+    return null;
+  }
+}
+
+// Create student with photo and parent aadhar
+router.post('/', registerUpload, async (req, res) => {
+  try {
+    const { name, studentId, phone, dept, sec, password, parentPhone } = req.body;
+    
+    const photoUrl = req.files['photo'] ? `/uploads/${req.files['photo'][0].filename}` : null;
+    const parentAadharUrl = req.files['parentAadhar'] ? `/uploads/${req.files['parentAadhar'][0].filename}` : null;
+
+    let extractedPhone = null;
+    let rawOcrText = "";
+    
+    if (parentAadharUrl) {
+      const fullPath = path.join(__dirname, '..', parentAadharUrl);
+      try {
+        const { data: { text } } = await Tesseract.recognize(fullPath, 'eng');
+        rawOcrText = text;
+        const phoneRegex = /(?:(?:\+|0{0,2})91[\s-]?)?[6789]\d{9}/g;
+        const matches = text.match(phoneRegex);
+        if (matches && matches.length > 0) {
+          extractedPhone = matches[0].replace(/\D/g, '').slice(-10);
+        }
+      } catch (ocrErr) {
+        console.error('OCR processing failed:', ocrErr);
+      }
     }
 
-    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      return res.status(400).json({ error: 'Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one symbol.' });
-    }
-
-    const photoUrl = req.file ? `/uploads/${req.file.filename}` : null;
-    
     const hashedPassword = await bcrypt.hash(password, 10);
-    const student = new Student({ name, studentId, phone, dept, sec, password: hashedPassword, photoUrl });
+
+    // Auto-assign counsellor based on department
+    let assignedCounsellorId = null;
+    try {
+      // Find a counsellor in the same department
+      const counsellor = await Counsellor.findOne({ department: dept });
+      if (counsellor) {
+        assignedCounsellorId = counsellor._id;
+      }
+    } catch (counsellorErr) {
+      console.error('Auto-assignment failed:', counsellorErr);
+    }
+
+    const student = new Student({ 
+      name, 
+      studentId, 
+      phone, 
+      parentPhone: extractedPhone || parentPhone, // Prefer extracted, fallback to manual
+      dept, 
+      sec, 
+      password: hashedPassword, 
+      photoUrl,
+      parentAadharUrl,
+      extractedAadharData: rawOcrText,
+      counsellorId: assignedCounsellorId
+    });
+    
     await student.save();
-    res.status(201).json(student);
+    res.status(201).json({ 
+      message: 'Student registered successfully', 
+      extractedPhone,
+      student 
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
