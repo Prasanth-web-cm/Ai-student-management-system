@@ -2,13 +2,13 @@
   "name": "student-management-system",
   "version": "1.0.0",
   "description": "Student Management System",
-  "main": "backend/server.js",
+  "main": "server/server.js",
   "scripts": {
-    "start": "cd backend && node server.js",
-    "dev": "cd backend && nodemon server.js",
-    "install-all": "npm install && cd client && npm install && cd ../backend && npm install",
+    "start": "cd server && node server.js",
+    "dev": "cd server && nodemon server.js",
+    "install-all": "npm install && cd client && npm install && cd ../server && npm install",
     "build-frontend": "cd client && npm run build",
-    "serve": "cd backend && node server.js",
+    "serve": "cd server && node server.js",
     "build": "npm run build-frontend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
