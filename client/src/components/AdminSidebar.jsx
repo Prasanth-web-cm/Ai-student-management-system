@@ -23,7 +23,7 @@ export default function AdminSidebar() {
     { icon: LayoutDashboard, label: 'Dashboard', path: '/admin/dashboard' },
     { icon: Users, label: 'Manage Students', path: '/admin/students' },
     { icon: ClipboardList, label: 'Academic Records', path: '/attendance' },
-    { icon: FileEdit, label: 'Forms & Quizzes', path: '/marks' },
+    { icon: FileEdit, label: 'Forms & Quizzes', path: '/admin/quizzes' },
     { icon: MessageSquare, label: 'SMS History', path: '/admin/alerts' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];

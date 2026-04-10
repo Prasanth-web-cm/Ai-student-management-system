@@ -24,6 +24,10 @@ import Contact from './pages/Contact';
 import StudentProfile from './pages/StudentProfile';
 import Settings from './pages/Settings';
 import CounsellorManagement from './pages/CounsellorManagement';
+import ManageQuizzes from './pages/ManageQuizzes';
+import QuizResults from './pages/QuizResults';
+import TakeQuiz from './pages/TakeQuiz';
+import StudentQuizzes from './pages/StudentQuizzes';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 const ProtectedRoute = ({ children, role }) => {
@@ -73,6 +77,8 @@ function App() {
             <Route path="/subjects" element={<ProtectedRoute role="student"><StudentSubjects /></ProtectedRoute>} />
             <Route path="/faculty" element={<ProtectedRoute role="student"><FacultyDetails /></ProtectedRoute>} />
             <Route path="/department" element={<ProtectedRoute role="student"><DepartmentInfo /></ProtectedRoute>} />
+            <Route path="/quizzes" element={<ProtectedRoute role="student"><StudentQuizzes /></ProtectedRoute>} />
+            <Route path="/quizzes/:id" element={<ProtectedRoute role="student"><TakeQuiz /></ProtectedRoute>} />
             
             {/* Admin Routes */}
             <Route 
@@ -85,6 +91,8 @@ function App() {
             />
             <Route path="/admin/students" element={<ProtectedRoute role="admin"><ManageStudents /></ProtectedRoute>} />
             <Route path="/admin/alerts" element={<ProtectedRoute role="admin"><SmsHistory /></ProtectedRoute>} />
+            <Route path="/admin/quizzes" element={<ProtectedRoute role="admin"><ManageQuizzes /></ProtectedRoute>} />
+            <Route path="/admin/quizzes/:id/results" element={<ProtectedRoute role="admin"><QuizResults /></ProtectedRoute>} />
             
             {/* Counsellor Routes */}
             <Route 

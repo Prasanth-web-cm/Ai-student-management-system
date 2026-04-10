@@ -56,7 +56,7 @@ app.use('/api/sms', smsHistoryRoutes);
 
 // --- START: SERVE FRONTEND STATIC FILES ---
 // Note: This works in production if you run 'npm run build' in the frontend folder first.
-const frontendFolder = path.join(__dirname, '..', 'frontend', 'dist');
+const frontendFolder = path.join(__dirname, '..', 'client', 'dist');
 
 if (fs.existsSync(frontendFolder)) {
     // Serve any static files (like JS, CSS, images) from the 'dist' folder
@@ -73,7 +73,7 @@ if (fs.existsSync(frontendFolder)) {
     // For any request that doesn't match an API route or a static file,
     // send back the index.html from the frontend folder.
     // This supports client-side routing on page refresh.
-    app.get('/*splat', (req, res) => {
+    app.get(/.*/, (req, res) => {
         res.sendFile(path.resolve(frontendFolder, 'index.html'));
     });
 } else {

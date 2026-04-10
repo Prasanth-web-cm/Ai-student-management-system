@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Users, CheckSquare, FileText, BookOpen, GraduationCap, Building2, LogIn, HeartPulse } from 'lucide-react';
+import { Users, CheckSquare, FileText, BookOpen, GraduationCap, Building2, LogIn, HeartPulse, ClipboardList } from 'lucide-react';
 
 export default function Sidebar() {
   const location = useLocation();
@@ -38,6 +38,9 @@ export default function Sidebar() {
         </Link>
         <Link to="/subjects" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive('/subjects')}`}>
           <BookOpen size={20} /> <span className="font-medium text-sm">Subjects</span>
+        </Link>
+        <Link to="/quizzes" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive('/quizzes')}`}>
+          <ClipboardList size={20} /> <span className="font-medium text-sm">Forms & Quizzes</span>
         </Link>
         <Link to="/faculty" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${isActive('/faculty')}`}>
           <GraduationCap size={20} /> <span className="font-medium text-sm">Faculty Details</span>
