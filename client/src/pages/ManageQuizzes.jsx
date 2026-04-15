@@ -27,12 +27,7 @@ export default function ManageQuizzes() {
     status: 'draft',
     questions: [{ questionText: '', options: ['', '', '', ''], correctAnswer: '' }]
   });
-
-  useEffect(() => {
-    fetchQuizzes();
-  }, []);
-
-  const fetchQuizzes = async () => {
+const fetchQuizzes = async () => {
     try {
       setLoading(true);
       const res = await axios.get(`${API_BASE}/api/quizzes`, {
@@ -45,6 +40,13 @@ export default function ManageQuizzes() {
       setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
+
+  
 
   const handleCreateQuiz = async (e) => {
     e.preventDefault();

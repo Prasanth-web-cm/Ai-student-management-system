@@ -16,12 +16,7 @@ export default function StudentQuizzes() {
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchQuizzes();
-  }, []);
-
-  const fetchQuizzes = async () => {
+const fetchQuizzes = async () => {
     try {
       setLoading(true);
       const res = await axios.get(`${API_BASE}/api/quizzes`, {
@@ -34,6 +29,13 @@ export default function StudentQuizzes() {
       setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
+
+  
 
   if (loading) return <div className="h-screen flex items-center justify-center font-bold text-slate-400 animate-pulse uppercase tracking-[0.2em]">Syncing Assessment Database...</div>;
 
