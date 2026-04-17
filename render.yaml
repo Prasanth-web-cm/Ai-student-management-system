@@ -1,11 +1,10 @@
 services:
   - type: web
-    name: student-management-backend
+    name: student-management-system
     env: node
     region: oregon
     branch: main
-    root: server
-    buildCommand: npm install
+    buildCommand: npm run install-all && npm run build
     startCommand: npm start
     envVars:
       - key: MONGO_URI
@@ -16,16 +15,3 @@ services:
         value: "supersecretvalue"
       - key: NODE_ENV
         value: "production"
-
-  - type: static
-    name: student-management-frontend
-    env: static
-    region: oregon
-    branch: main
-    root: client
-    buildCommand: npm install && npm run build
-    publishCommand: npm run build
-    publishPath: dist
-    envVars:
-      - key: VITE_API_BASE_URL
-        value: "https://student-management-backend.onrender.com"
