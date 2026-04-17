@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { X, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { API_BASE } from '../../api';
 
 export default function CounsellingRecordForm({ student, onClose, onSave }) {
   const [formData, setFormData] = useState({
@@ -19,7 +20,7 @@ export default function CounsellingRecordForm({ student, onClose, onSave }) {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/counsellors/record', {
+      const response = await fetch(`${API_BASE}/api/counsellors/record`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

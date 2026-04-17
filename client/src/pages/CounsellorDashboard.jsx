@@ -11,6 +11,7 @@ import {
 } from 'recharts';
 import CounsellingRecordForm from '../components/dashboards/CounsellingRecordForm';
 import ManualSmsForm from '../components/dashboards/ManualSmsForm';
+import { API_BASE } from '../api';
 
 const mockAnalytics = [
   { name: 'Mon', risk: 4, stable: 20 },
@@ -35,7 +36,7 @@ export default function CounsellorDashboard() {
   const fetchAssignedStudents = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/counsellors/assigned-students', {
+      const response = await fetch(`${API_BASE}/api/counsellors/assigned-students`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       const data = await response.json();
