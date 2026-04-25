@@ -23,12 +23,7 @@ export default function TakeQuiz() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedResponse, setSubmittedResponse] = useState(null);
-
-  useEffect(() => {
-    fetchQuiz();
-  }, [id]);
-
-  const fetchQuiz = async () => {
+const fetchQuiz = async () => {
     try {
       setLoading(true);
       const res = await axios.get(`${API_BASE}/api/quizzes/${id}`, {
@@ -50,6 +45,13 @@ export default function TakeQuiz() {
       setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    fetchQuiz();
+  }, [id]);
+
+  
 
   const handleOptionSelect = (option) => {
     const newAnswers = [...answers];

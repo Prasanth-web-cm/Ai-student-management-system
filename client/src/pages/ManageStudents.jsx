@@ -22,12 +22,7 @@ export default function ManageStudents() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDept, setSelectedDept] = useState('All');
   const [editingStudent, setEditingStudent] = useState(null);
-
-  useEffect(() => {
-    fetchStudents();
-  }, []);
-
-  const fetchStudents = async () => {
+const fetchStudents = async () => {
     try {
       setLoading(true);
       const res = await axios.get(`${API_BASE}/api/students`);
@@ -38,6 +33,13 @@ export default function ManageStudents() {
       setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to permanently delete this student record?')) {

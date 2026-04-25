@@ -21,12 +21,7 @@ export default function QuizResults() {
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-
-  useEffect(() => {
-    fetchData();
-  }, [id]);
-
-  const fetchData = async () => {
+const fetchData = async () => {
     try {
       setLoading(true);
       const [resultsRes, quizRes] = await Promise.all([
@@ -45,6 +40,13 @@ export default function QuizResults() {
       setLoading(false);
     }
   };
+
+
+  useEffect(() => {
+    fetchData();
+  }, [id]);
+
+  
 
   const filteredResults = results.filter(r => 
     r.studentName.toLowerCase().includes(searchTerm.toLowerCase())
